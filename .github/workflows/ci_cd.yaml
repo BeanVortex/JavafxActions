@@ -23,6 +23,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Actions demo
-          path: |
-            build/installer
-            build/libs
+          path: build/releases

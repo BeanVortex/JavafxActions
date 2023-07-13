@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.javafx'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 repositories {
     mavenCentral()
@@ -19,6 +19,7 @@ ext {
 
 sourceCompatibility = '19'
 targetCompatibility = '19'
+mainClassName = 'com.javafx.actionsgradledemo.Launcher'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -26,7 +27,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.javafx.actionsgradledemo'
-    mainClass = 'com.javafx.actionsgradledemo.HelloApplication'
+    mainClass = mainClassName
 }
 
 javafx {
@@ -50,6 +51,29 @@ jlink {
     launcher {
         name = 'app'
     }
+    jpackage {
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            appVersion = version
+            installerName = 'ActionsGradleDemo'
+            installerOptions = ['--win-menu', '--win-shortcut',
+                                '--vendor', 'DarkDeveloper',
+                                "--win-menu-group", "Actions demo",
+                                "--app-version", version as String,
+                                "--description", "demo for publishing javafx app in github using github actions"
+            ]
+            imageOptions = ['--icon', 'src/main/resources/com/javafx/actionsgradledemo/icons/logo.ico']
+        }
+
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
 
 jlinkZip {
