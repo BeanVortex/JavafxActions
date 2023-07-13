@@ -10,7 +10,7 @@ IF EXIST build\java-runtime rmdir /S /Q  .\build\java-runtime
 IF EXIST build\installer rmdir /S /Q target\installer
 
 xcopy /S /Q build\libs\* build\installer\input\libs\
-xcopy build\libs\*.jar build\installer\input\libs\
+@REM xcopy build\libs\*.jar build\installer\input\libs\
 
 rem ------ REQUIRED MODULES ---------------------------------------------------
 rem Use jlink to detect all modules that are required to run the application.
@@ -65,12 +65,11 @@ for %%s in ("msi" "exe") do call "%JAVA_HOME%\bin\jpackage" ^
   --type %%s ^
   --dest build\installer ^
   --input build\installer\input\libs ^
-  --name JDKMon ^
-  --main-class eu.hansolo.fx.jdkmon.Launcher ^
+  --name Actions demo ^
+  --main-class com.javafx.actionsgradledemo.Main ^
   --java-options -Xmx2048m ^
   --java-options '--enable-preview' ^
   --runtime-image build\java-runtime ^
-  --icon src\main\resources\eu\hansolo\fx\jdkmon\icon.ico ^
   --win-shortcut ^
   --win-menu ^
   --win-menu-group "Actions Demo" ^
