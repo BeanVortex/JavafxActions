@@ -65,7 +65,7 @@ for %%s in ("msi" "exe") do call "%JAVA_HOME%\bin\jpackage" ^
   --type %%s ^
   --dest build\installer ^
   --input build\installer\input\libs ^
-  --name Actions demo ^
+  --name Actionsdemo ^
   --main-class com.javafx.actionsgradledemo.Main ^
   --java-options -Xmx2048m ^
   --java-options '--enable-preview' ^
