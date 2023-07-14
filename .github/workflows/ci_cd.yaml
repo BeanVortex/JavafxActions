@@ -47,7 +47,28 @@ jobs:
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
-          for file in ${{ steps.list_files.outputs.files }}; do
-            echo "Uploading $file"
-            gh release upload ${{ steps.draft_release.outputs.upload_url }} "./build/releases/$file" --c "application/octet-stream"
-          done
+          const github = require('@actions/github');
+          const fs = require('fs');
+          const path = require('path');
+
+          const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+          const releaseUrl = '${{ steps.draft_release.outputs.upload_url }}';
+
+          const files = fs.readdirSync('build/releases/');
+          for (const file of files) {
+            const filePath = path.join('build/releases/', file);
+            const fileStat = fs.statSync(filePath);
+            if (fileStat.isFile()) {
+              const uploadResponse = await octokit.repos.uploadReleaseAsset({
+                url: releaseUrl,
+                headers: {
+                  'content-type': 'application/octet-stream',
+                  'content-length': fileStat.size
+                },
+                name: file,
+                data: fs.readFileSync(filePath)
+              });
+              console.log(`Uploaded asset: ${uploadResponse.data.name}`);
+            }
+          }
+      
