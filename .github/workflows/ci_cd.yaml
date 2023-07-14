@@ -20,10 +20,10 @@ jobs:
           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Create Distribution
         run: .\builders\windows.bat
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Actions demo
-          path: build/releases
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: Actions demo
+#          path: build/releases
 
 
   create_release:
@@ -34,7 +34,7 @@ jobs:
         id: draft_release
         uses: actions/create-release@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
