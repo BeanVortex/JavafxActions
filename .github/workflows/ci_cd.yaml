@@ -56,20 +56,18 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: windows-build
-
-      - name: Copy Windows Artifacts to Release Directory
-        run: cp -R ${{ github.workspace }}/windows-build/* build/releases
-
       - name: Download Linux Artifacts
         uses: actions/download-artifact@v2
         with:
           name: linux-build
 
-      - name: Copy Linux Artifacts to Release Directory
-        run: cp -R ${{ github.workspace }}/linux-build/* build/releases
-
       - name: tree
         run: tree .
+
+      - name: Copy Windows Artifacts to Release Directory
+        run: cp -R ${{ github.workspace }}/windows-build/* build/releases
+      - name: Copy Linux Artifacts to Release Directory
+        run: cp -R ${{ github.workspace }}/linux-build/* build/releases
       - name: Release Artifacts
         uses: marvinpinto/action-automatic-releases@latest
         with:
