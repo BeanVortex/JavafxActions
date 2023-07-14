@@ -20,10 +20,10 @@ jobs:
           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Create Distribution
         run: .\builders\windows.bat
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: Actions demo
-#          path: build/releases
+  #      - uses: actions/upload-artifact@v3
+  #        with:
+  #          name: Actions demo
+  #          path: build/releases
 
 
   create_release:
@@ -36,8 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: GFFG
-          release_name: Release HJ
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
           draft: true
           prerelease: false
       - name: List Files
@@ -48,19 +48,6 @@ jobs:
         id: upload_release_assets
         run: |
           for file in ${{ steps.list_files.outputs.files }}; do
-            if [[ $file == *.zip ]]; then
-              content_type="application/zip"
-            elif [[ $file == *.msi ]]; then
-              content_type="application/x-msi"
-            elif [[ $file == *.exe ]]; then
-              content_type="application/octet-stream"
-            elif [[ $file == *.jar ]]; then
-              content_type="application/java-archive"
-            else
-              content_type="application/octet-stream"
-            fi
             echo "Uploading $file"
-            echo "::set-env name=CONTENT_TYPE::$content_type"
-            echo "::set-env name=FILE::$file"
-            gh release upload ${{ steps.draft_release.outputs.upload_url }} "./build/releases/$file" --c $content_type
+            gh release upload ${{ steps.draft_release.outputs.upload_url }} "./build/releases/$file" --c "application/octet-stream"
           done
