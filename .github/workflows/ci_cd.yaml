@@ -29,6 +29,7 @@ jobs:
             ./build/releases/**
 
   build-linux:
+    needs: build-windows
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v3
