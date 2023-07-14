@@ -40,6 +40,11 @@ jobs:
           distribution: 'oracle'
           gpg-private-key: ${{ secrets.GPG_KEY }}
           gpg-passphrase: PASSPHRASE
+
+      - name: Install makeself
+        run: sudo apt-get install makeself
+      - name: Make script executable
+        run: chmod +x ./builders/linux.sh
       - name: Build using script
         run: ./builders/linux.sh
 
