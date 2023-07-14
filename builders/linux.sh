@@ -22,11 +22,13 @@ do
 
   $JAVA_HOME/bin/jpackage \
   --type $type \
-  --dest ./build/releases \
+  --dest build/releases \
+  --input build/libs/ \
   --name ActionsDemo \
   --main-class com.javafx.actionsgradledemo.Main \
+  --main-jar ${MAIN_JAR} \
   --java-options '-Djdk.gtk.version=2' \
-#  --runtime-image ./build/image \
+  --runtime-image build/image \
   --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
   --linux-shortcut \
   --linux-menu-group "ActionsDemo" \
