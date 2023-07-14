@@ -1,6 +1,6 @@
 name: ci
-app:
-  version: 1.0.0
+env:
+  APP_VERSION: 1.0.0
 on: [ push, pull_request ]
 
 jobs:
@@ -22,10 +22,10 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v${{app.version}}"
+          automatic_release_tag: "v${{APP_VERSION}}"
           prerelease: false
           draft: true
-          title: "v${{app.version}}"
+          title: "v${{APP_VERSION}}"
           files: |
             ./build/releases/**
 
