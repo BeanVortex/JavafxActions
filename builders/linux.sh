@@ -23,7 +23,7 @@ makeself ./builders/linux-installer $FILE_NAME-linux.run "Description" ./install
 chmod +x $FILE_NAME-linux.run
 
 echo "moving files to releases"
-ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+#ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 #mv ./build/jpackage/$FILE_NAME* ./build/releases/
 mv ./build/libs/*.jar ./build/releases/$FILE_NAME-linux.jar
 mv ./*.run ./build/releases

@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: windows-build
-          path: ./build/releases
+          path: .\build\releases
 
   build-linux:
     runs-on: [ ubuntu-latest ]
@@ -54,13 +54,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: tree
+        run: sudo apt-get install tree
+      - name: ls tree
+        run: tree .
       - name: Release Artifacts
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.RELEASE_TOKEN }}
-          automatic_release_tag: "v${{ github.run_number }}"
+          automatic_release_tag: "v${{ env.VERSION }}"
           prerelease: false
           draft: true
-          title: "v${{ github.run_number }}"
+          title: "v${{ env.VERSION }}"
           files: |
             ./build/releases/**
