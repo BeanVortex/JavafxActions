@@ -1,7 +1,6 @@
 @ECHO OFF
 
-set APP_VERSION=1.0.0
-set FILE_NAME=ActionsGradleDemo-%APP_VERSION%
+set FILE_NAME=ActionsGradleDemo-%VERSION%
 
 
 @REM create installers and runtime (options are set in build.gradle)
