@@ -42,8 +42,11 @@ jobs:
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/releases
-          asset_name: ${{ each file in steps.list_files.outputs.files }}${{ file }}
-          asset_content_type: application/octet-stream
+        run: |
+          for file in ${{ steps.list_files.outputs.files }}; do
+            echo "Uploading $file"
+            asset_name=$(basename "$file")
+            echo "::set-output name=asset_name::$asset_name"
+            echo "::set-output name=asset_path::$file"
+            echo "::set-output name=asset_content_type::application/octet-stream"
+          done
