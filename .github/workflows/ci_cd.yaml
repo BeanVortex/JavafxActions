@@ -47,9 +47,9 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v${{app.version}}"
+          automatic_release_tag: "v${{ env.VERSION }}"
           prerelease: false
           draft: true
-          title: "v${{app.version}}"
+          title: "v${{ env.VERSION }}"
           files: |
             ./build/releases/**
