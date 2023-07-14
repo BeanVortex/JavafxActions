@@ -36,16 +36,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ## body data here
+          tag_name: GFFG
+          release_name: Release HJ
           draft: true
           prerelease: false
       - name: List Files
         id: list_files
         run: |
-          echo "::set-output name=files::$(ls build/releases)"
+          echo "{files}={$(ls build/releases)}" >> $GITHUB_OUTPUT
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
