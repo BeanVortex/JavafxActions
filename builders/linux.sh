@@ -4,26 +4,17 @@ JAVA_VERSION=19
 
 # create installers and runtime (options are set in build.gradle)
 echo "creating installers and runtime"
-./gradlew build
 
-echo "detecting required modules"
-detected_modules=`$JAVA_HOME/bin/jdeps \
-  --multi-release ${JAVA_VERSION} \
-  --ignore-missing-deps \
-  --print-module-deps \
-  --class-path "build/libs/*" \
-    build/classes/java/main/com/javafx/actionsgradledemo/Main.class`
-echo "detected modules: ${detected_modules}"
+# create fat jar of project (see build.gradle)
+echo "creating jar"
+./gradlew fatJar
 
-echo "creating java runtime image"
-$JAVA_HOME/bin/jlink \
-  --no-header-files \
-  --no-man-pages  \
-  --compress=2  \
-  --strip-debug \
-  --add-modules "${detected_modules}" \
-  --include-locales=en \
-  --output build/image
+tree
+
+echo "jlinking"
+./gradlew jlink
+
+tree
 
 for type in "deb" "rpm"
 do
@@ -47,10 +38,6 @@ do
 
 done
 
-
-# create fat jar of project (see build.gradle)
-echo "creating jar"
-./gradlew fatJar
 
 echo "creating releases folder"
 mkdir ./build/releases/
