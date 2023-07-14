@@ -26,7 +26,7 @@ do
   --input build/libs/ \
   --name ActionsDemo \
   --main-class com.javafx.actionsgradledemo.Main \
-  --main-jar ${MAIN_JAR} \
+  --main-jar build/libs/${MAIN_JAR} \
   --java-options '-Djdk.gtk.version=2' \
   --runtime-image build/image \
   --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
