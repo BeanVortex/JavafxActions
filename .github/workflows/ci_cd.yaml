@@ -33,37 +33,14 @@ jobs:
           release_name: Release ${{ github.run_number }}
           draft: true
           prerelease: false
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - name: Install dependencies
-        run: npm install @actions/github
+      - name: List Files
+        id: list_files
+        run: |
+          echo "::set-output name=files::$(ls build/releases)"
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
-          const github = require('@actions/github');
-          const fs = require('fs');
-          const path = require('path');
-
-          const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-          const releaseUrl = '${{ steps.draft_release.outputs.upload_url }}';
-
-          const files = fs.readdirSync('build/releases/');
-          for (const file of files) {
-            const filePath = path.join('build/releases/', file);
-            const fileStat = fs.statSync(filePath);
-            if (fileStat.isFile()) {
-              const uploadResponse = await octokit.repos.uploadReleaseAsset({
-                url: releaseUrl,
-                headers: {
-                  'content-type': 'application/octet-stream',
-                  'content-length': fileStat.size
-                },
-                name: file,
-                data: fs.readFileSync(filePath)
-              });
-              console.log(`Uploaded asset: ${uploadResponse.data.name}`);
-            }
-          }
-      
+          for file in ${{ steps.list_files.outputs.files }}; do
+            echo "Uploading $file"
+            hub release edit --attach "./build/releases/$file" --prerelease=false ${{ steps.draft_release.outputs.upload_url }}
+          done
