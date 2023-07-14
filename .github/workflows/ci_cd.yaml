@@ -24,14 +24,21 @@ jobs:
         with:
           name: Actions demo
           path: build/releases
-      - name: Create Release
-        id: create_release
+
+
+  create_release:
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - name: Draft a release
+        id: draft_release
         uses: actions/create-release@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: |
+            ## body data here
           draft: true
           prerelease: false
       - name: List Files
@@ -42,11 +49,17 @@ jobs:
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          for file in ${{ steps.list_files.outputs.files }}; do
-            echo "Uploading $file"
-            asset_name=$(basename "$file")
-            echo "::set-output name=asset_name::$asset_name"
-            echo "::set-output name=asset_path::$file"
-            echo "::set-output name=asset_content_type::application/octet-stream"
-          done
+        with:
+          upload_url: ${{ steps.draft_release.outputs.upload_url }}
+          asset_path: build/releases
+          asset_name: ${{ matrix.file }}
+          asset_content_type: ${{ matrix.content_type }}
+        matrix:
+          file: ${{ steps.list_files.outputs.files }}
+          content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
+          file_extension_to_content_type:
+            .zip: application/zip
+            .msi: application/x-msi
+            .exe: application/octet-stream
+            .run: application/octet-stream
+            .jar: application/java-archive
