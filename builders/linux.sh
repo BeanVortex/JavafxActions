@@ -20,15 +20,16 @@ for type in "deb" "rpm"
 do
   echo "Creating installer of type ... $type"
 
+#  --input build/libs/ \
+#  --main-jar ${MAIN_JAR} \
+
   $JAVA_HOME/bin/jpackage \
   --type $type \
   --dest build/releases \
-#  --input build/libs/ \
   --name ActionsDemo \
   --main-class com.javafx.actionsgradledemo.Main \
-#  --main-jar ${MAIN_JAR} \
   --java-options '-Djdk.gtk.version=2' \
-  --runtime-image build/image \
+  --app-image build/image \
   --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
   --linux-shortcut \
   --linux-menu-group "ActionsDemo" \
