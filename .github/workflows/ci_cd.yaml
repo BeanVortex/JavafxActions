@@ -16,23 +16,13 @@ jobs:
           gpg-passphrase: PASSPHRASE
       - name: Build using script
         run: .\builders\windows.bat
-      - name: Draft a release
-        id: draft_release
-        uses: actions/create-release@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          draft: true
-          prerelease: false
-      - name: List Files
-        id: list_files
-        run: |
-          echo "::set-output name=files::$(ls .\build\releases\)"
-      - name: Upload Release Assets
-        id: upload_release_assets
-        run: |
-          (for %%file in (%steps.read_file_list.outputs.files%) do (
-            hub release edit --attach ".\build\releases\%%file" --prerelease=false "%steps.draft_release.outputs.upload_url%"
-          ))
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            .\build\releases\*
