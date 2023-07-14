@@ -22,7 +22,8 @@ mv ./build/image/* ./builders/linux-installer/application
 makeself ./builders/linux-installer/ $FILE_NAME-linux.run "Description" ./builders/linux-installer/install.sh
 
 echo "moving files to releases"
+ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 mv ./build/jpackage./$FILE_NAME* ./build/releases/
-mv ./build/libs/$FILE_NAME.jar ./build/releases/$FILE_NAME-linux.jar
+mv ./build/libs/*.jar ./build/releases/$FILE_NAME-linux.jar
 mv ./*.run ./build/releases
 
