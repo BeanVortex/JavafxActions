@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=ActionsDemo
+Version=1.0.0
+Comment=description
+Keywords=java,app
+Exec=/usr/share/ActionsDemo/bin/app
+Terminal=false
+Icon=/usr/share/ActionsDemo/logo.png
+Type=Application
+Categories=app
+StartupNotify=true
+

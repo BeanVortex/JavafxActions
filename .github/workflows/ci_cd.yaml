@@ -1,5 +1,6 @@
 name: ci
-
+app:
+  version: 1.0.0
 on: [ push, pull_request ]
 
 jobs:
@@ -21,10 +22,35 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "v${{app.version}}"
           prerelease: false
           draft: true
+          title: "v${{app.version}}"
+          files: |
+            ./build/releases/**
 
-          title: "Development Build"
+  build-linux:
+    needs: build-windows
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 19.0.2
+        uses: actions/setup-java@v3
+        with:
+          java-version: 19.0.2
+          distribution: 'oracle'
+          gpg-private-key: ${{ secrets.GPG_KEY }}
+          gpg-passphrase: PASSPHRASE
+      - name: Build using script
+        run: .\builders\linux.sh
+
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          automatic_release_tag: "v${{app.version}}"
+          prerelease: false
+          draft: true
+          title: "v${{app.version}}"
           files: |
             ./build/releases/**
