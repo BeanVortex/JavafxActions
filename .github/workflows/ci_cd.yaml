@@ -36,12 +36,13 @@ jobs:
           asset_path: build/releases
           asset_name: ${{ matrix.file }}
           asset_content_type: ${{ matrix.content_type }}
-        matrix:
-          file: ${{ steps.list_files.outputs.files }}
-          content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
-          file_extension_to_content_type:
-            .zip: application/zip
-            .msi: application/x-msi
-            .exe: application/octet-stream
-            .jar: application/java-archive
-            .run: application/octet-stream
+        strategy:
+          matrix:
+            file: ${{ steps.list_files.outputs.files }}
+            content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
+            file_extension_to_content_type:
+              .zip: application/zip
+              .msi: application/x-msi
+              .exe: application/octet-stream
+              .jar: application/java-archive
+              .run: application/octet-stream
