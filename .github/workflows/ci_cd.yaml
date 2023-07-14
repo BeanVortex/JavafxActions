@@ -16,20 +16,13 @@ jobs:
           gpg-passphrase: PASSPHRASE
       - name: Build using script
         run: .\builders\windows.bat
-
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v${{ env.VERSION }}"
-          prerelease: false
-          draft: true
-          title: "v${{ env.VERSION }}"
-          files: |
-            ./build/releases/**
+          name: windows-build
+          path: ./build/releases
 
   build-linux:
-    needs: build-windows
     runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v3
@@ -49,14 +42,25 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build using script
         run: ./builders/linux.sh
-
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v${{ env.VERSION }}"
+          name: linux-build
+          path: ./build/releases
+
+  release-artifacts:
+    runs-on: [ubuntu-latest]
+    needs: [build-windows, build-linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Release Artifacts
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          automatic_release_tag: "v${{ github.run_number }}"
           prerelease: false
           draft: true
-          title: "v${{ env.VERSION }}"
+          title: "v${{ github.run_number }}"
           files: |
             ./build/releases/**
