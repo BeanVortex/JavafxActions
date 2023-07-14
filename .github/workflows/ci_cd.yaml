@@ -16,13 +16,6 @@ jobs:
           gpg-passphrase: PASSPHRASE
       - name: Build using script
         run: .\builders\windows.bat
-
-
-
-  create-release:
-    runs-on: [ ubuntu-latest ]
-    needs: [ build-windows ]
-    steps:
       - name: Draft a release
         id: draft_release
         uses: actions/create-release@v1.0.0
@@ -36,11 +29,11 @@ jobs:
       - name: List Files
         id: list_files
         run: |
-          echo "::set-output name=files::$(ls build/releases)"
+          echo "::set-output name=files::$(ls .\build\releases\)"
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
           for file in ${{ steps.list_files.outputs.files }}; do
             echo "Uploading $file"
-            hub release edit --attach "./build/releases/$file" --prerelease=false ${{ steps.draft_release.outputs.upload_url }}
+            hub release edit --attach ".\build\releases\$file" --prerelease=false ${{ steps.draft_release.outputs.upload_url }}
           done
