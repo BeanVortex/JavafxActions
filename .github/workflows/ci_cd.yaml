@@ -1,7 +1,6 @@
 name: ci
 on: [ push, pull_request ]
-x-common-env: &APP_VERSION
-  version: 1.0.0
+version: 1.0.0
 
 jobs:
   build-windows:
@@ -22,10 +21,10 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v"${{<<: *APP_VERSION}}
+          automatic_release_tag: "v"${{version}}
           prerelease: false
           draft: true
-          title: "v"${{<<: *APP_VERSION}}
+          title: "v"${{version}}
           files: |
             ./build/releases/**
 
