@@ -16,8 +16,11 @@ jobs:
           gpg-passphrase: PASSPHRASE
       - name: Build using script
         run: .\builders\windows.bat
-      - name: Copy Artifacts to Workspace
-        run: Copy-Item -Path build/releases/* -Destination ${{ github.workspace }}/build/releases -Force
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-build
+          path: .\build\releases
 
   build-linux:
     runs-on: [ ubuntu-latest ]
@@ -39,21 +42,33 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build using script
         run: ./builders/linux.sh
-      - name: Copy Artifacts to Workspace
-        run: cp -R build/releases ${{ github.workspace }}/build/releases
-
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build
+          path: ./build/releases
 
   release-artifacts:
     runs-on: [ubuntu-latest]
     needs: [build-windows, build-linux]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Create Release Artifacts Directory
-        run: mkdir build/releases
-      - name: Copy Artifacts from Workspace
-        run: cp -R ${{ github.workspace }}/build/releases/* build/releases
-      - name: ls tree
+     - name: Download Windows Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: windows-build
+
+      - name: Copy Windows Artifacts to Release Directory
+        run: cp -R ${{ github.workspace }}/windows-build/* build/releases
+
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: linux-build
+
+      - name: Copy Linux Artifacts to Release Directory
+        run: cp -R ${{ github.workspace }}/linux-build/* build/releases
+
+      - name: tree
         run: tree .
       - name: Release Artifacts
         uses: marvinpinto/action-automatic-releases@latest
