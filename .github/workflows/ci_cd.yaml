@@ -45,21 +45,23 @@ jobs:
         id: list_files
         run: |
           echo "::set-output name=files::$(ls build/releases)"
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: build/releases
-          asset_name: ${{ matrix.file }}
-          asset_content_type: ${{ matrix.content_type }}
-        matrix:
-          file: ${{ steps.list_files.outputs.files }}
-          content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
-          file_extension_to_content_type:
-            .zip: application/zip
-            .msi: application/x-msi
-            .exe: application/octet-stream
-            .run: application/octet-stream
-            .jar: application/java-archive
+      - name: Upload Release Assets
+        id: upload_release_assets
+        run: |
+          for file in ${{ steps.list_files.outputs.files }}; do
+            if [[ $file == *.zip ]]; then
+              content_type="application/zip"
+            elif [[ $file == *.msi ]]; then
+              content_type="application/x-msi"
+            elif [[ $file == *.exe ]]; then
+              content_type="application/octet-stream"
+            elif [[ $file == *.jar ]]; then
+              content_type="application/java-archive"
+            else
+              content_type="application/octet-stream"
+            fi
+            echo "Uploading $file"
+            echo "::set-env name=CONTENT_TYPE::$content_type"
+            echo "::set-env name=FILE::$file"
+            gh release upload ${{ steps.draft_release.outputs.upload_url }} "./build/releases/$file" --c $content_type
+          done
