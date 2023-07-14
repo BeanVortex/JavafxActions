@@ -22,10 +22,10 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "v"<<: *APP_VERSION
+          automatic_release_tag: "v"${{<<: *APP_VERSION}}
           prerelease: false
           draft: true
-          title: "v"<<: *APP_VERSION
+          title: "v"${{<<: *APP_VERSION}}
           files: |
             ./build/releases/**
 
