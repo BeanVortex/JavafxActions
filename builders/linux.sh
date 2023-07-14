@@ -19,10 +19,10 @@ tar -czf ./build/releases/$FILE_NAME-linux-bin.tar.gz ./build/image/
 echo "creating run file for other linux distributions"
 mkdir ./builders/linux-installer/application
 mv ./build/image/* ./builders/linux-installer/application
-makeself ./builders/linux-installer/ $FILE_NAME-linux.run "Description" ./install.sh
+makeself ./builders/linux-installer/ $FILE_NAME-linux.run "Description" ./builders/linux-installer/install.sh
 
 echo "moving files to releases"
 mv ./build/jpackage./$FILE_NAME* ./build/releases/
 mv ./build/libs/$FILE_NAME.jar ./build/releases/$FILE_NAME-linux.jar
-mv ./builders/linux-installer/*.run ./build/releases
+mv ./*.run ./build/releases
 
