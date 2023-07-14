@@ -5,16 +5,6 @@ on: [ push, pull_request ]
 jobs:
   build-windows:
     runs-on: [ windows-latest ]
-    strategy:
-      matrix:
-        file: ${{ steps.list_files.outputs.files }}
-        content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
-        file_extension_to_content_type:
-          .zip: application/zip
-          .msi: application/x-msi
-          .exe: application/octet-stream
-          .jar: application/java-archive
-          .run: application/octet-stream
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19.0.2
@@ -36,13 +26,14 @@ jobs:
           release_name: Release ${{ github.run_number }}
           draft: true
           prerelease: false
+      - name: List Files
+        id: list_files
+        run: |
+          echo "::set-output name=files::$(ls .\build\releases\)"
       - name: Upload Release Assets
         id: upload_release_assets
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: build/releases
-          asset_name: ${{ matrix.file }}
-          asset_content_type: ${{ matrix.content_type }}
+        run: |
+          for (%%file in ${{ steps.read_file_list.outputs.files }}) do (
+            echo "Uploading %%file"
+            hub release edit --attach ".\build\releases\%%file" --prerelease=false "${{ steps.draft_release.outputs.upload_url }}"
+          done
