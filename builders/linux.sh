@@ -1,44 +1,13 @@
 FILE_NAME=ActionsGradleDemo-$VERSION
-MAIN_JAR=$FILE_NAME.jar
-JAVA_VERSION=19
 
 # create installers and runtime (options are set in build.gradle)
 echo "creating installers and runtime"
+./gradlew jpackage
+
 
 # create fat jar of project (see build.gradle)
 echo "creating jar"
 ./gradlew fatJar
-
-tree
-
-echo "jlinking"
-./gradlew jlink
-
-tree
-
-for type in "deb" "rpm"
-do
-  echo "Creating installer of type ... $type"
-
-#  --input build/libs/ \
-#  --main-jar ${MAIN_JAR} \
-#  --main-class com.javafx.actionsgradledemo.Main \
-#  --java-options '-Djdk.gtk.version=2' \
-
-  $JAVA_HOME/bin/jpackage \
-  --type $type \
-  --dest build/releases \
-  --name ActionsDemo \
-  --app-image build/image \
-  --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
-  --linux-shortcut \
-  --linux-menu-group "ActionsDemo" \
-  --app-version ${VERSION} \
-  --vendor "DarkDeveloper" \
-  --description "description" \
-
-done
-
 
 echo "creating releases folder"
 mkdir ./build/releases/
