@@ -22,12 +22,12 @@ do
 
 #  --input build/libs/ \
 #  --main-jar ${MAIN_JAR} \
+#  --main-class com.javafx.actionsgradledemo.Main \
 
   $JAVA_HOME/bin/jpackage \
   --type $type \
   --dest build/releases \
   --name ActionsDemo \
-  --main-class com.javafx.actionsgradledemo.Main \
   --java-options '-Djdk.gtk.version=2' \
   --app-image build/image \
   --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
