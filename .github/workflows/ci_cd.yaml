@@ -14,19 +14,12 @@ jobs:
           distribution: 'oracle'
           gpg-private-key: ${{ secrets.GPG_KEY }}
           gpg-passphrase: PASSPHRASE
-      - name: Build with Gradle
-        run: ./gradlew.bat build
-        env:
-          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Create Distribution
+      - name: Build using script
         run: .\builders\windows.bat
-  #      - uses: actions/upload-artifact@v3
-  #        with:
-  #          name: Actions demo
-  #          path: build/releases
 
 
-  create_release:
+
+  create-release:
     runs-on: [ ubuntu-latest ]
     needs: [ build-windows ]
     steps:
@@ -40,10 +33,12 @@ jobs:
           release_name: Release ${{ github.run_number }}
           draft: true
           prerelease: false
-      - name: List Files
-        id: list_files
-        run: |
-          echo "{files}={$(ls build/releases)}" >> $GITHUB_OUTPUT
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install @actions/github
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
