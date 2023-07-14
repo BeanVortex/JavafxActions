@@ -1,8 +1,51 @@
 FILE_NAME=ActionsGradleDemo-$VERSION
+MAIN_JAR=$FILE_NAME.jar
+JAVA_VERSION=19
 
 # create installers and runtime (options are set in build.gradle)
 echo "creating installers and runtime"
-./gradlew jpackage
+./gradlew build
+
+echo "detecting required modules"
+detected_modules=`$JAVA_HOME/bin/jdeps \
+  --multi-release ${JAVA_VERSION} \
+  --ignore-missing-deps \
+  --print-module-deps \
+  --class-path "build/libs/*" \
+    build/classes/java/main/com/javafx/actionsgradledemo/Main.class`
+echo "detected modules: ${detected_modules}"
+
+echo "creating java runtime image"
+$JAVA_HOME/bin/jlink \
+  --no-header-files \
+  --no-man-pages  \
+  --compress=2  \
+  --strip-debug \
+  --add-modules "${detected_modules}" \
+  --include-locales=en \
+  --output build/image
+
+for type in "deb" "rpm"
+do
+  echo "Creating installer of type ... $type"
+
+  $JAVA_HOME/bin/jpackage \
+  --type $type \
+  --dest build/releases \
+  --input build/libs/ \
+  --name ActionsDemo \
+  --main-class com.javafx.actionsgradledemo.Main \
+  --main-jar ${MAIN_JAR} \
+  --java-options '-Djdk.gtk.version=2' \
+  --runtime-image build/image \
+  --icon src/main/resources/com/javafx/actionsgradledemo/icons/logo.png \
+  --linux-shortcut \
+  --linux-menu-group "ActionsDemo" \
+  --app-version ${VERSION} \
+  --vendor "DarkDeveloper" \
+  --description "description" \
+
+done
 
 
 # create fat jar of project (see build.gradle)
