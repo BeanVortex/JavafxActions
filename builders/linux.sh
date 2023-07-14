@@ -1,4 +1,4 @@
-FILE_NAME=ActionsGradleDemo-$APP_VERSION
+FILE_NAME=ActionsGradleDemo-$VERSION
 
 # create installers and runtime (options are set in build.gradle)
 echo "creating installers and runtime"
