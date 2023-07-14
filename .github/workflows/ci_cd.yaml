@@ -33,7 +33,7 @@ jobs:
       - name: Upload Release Assets
         id: upload_release_assets
         run: |
-          for (%%file in ${{ steps.read_file_list.outputs.files }}) do (
+          for (%%file in %steps.read_file_list.outputs.files% ) do (
             echo "Uploading %%file"
-            hub release edit --attach ".\build\releases\%%file" --prerelease=false "${{ steps.draft_release.outputs.upload_url }}"
+            hub release edit --attach ".\build\releases\%%file" --prerelease=false "%steps.draft_release.outputs.upload_url%"
           done
