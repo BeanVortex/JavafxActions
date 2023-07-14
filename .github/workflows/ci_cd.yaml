@@ -5,6 +5,16 @@ on: [ push, pull_request ]
 jobs:
   build-windows:
     runs-on: [ windows-latest ]
+    strategy:
+      matrix:
+        file: ${{ steps.list_files.outputs.files }}
+        content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
+        file_extension_to_content_type:
+          .zip: application/zip
+          .msi: application/x-msi
+          .exe: application/octet-stream
+          .jar: application/java-archive
+          .run: application/octet-stream
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19.0.2
@@ -36,13 +46,3 @@ jobs:
           asset_path: build/releases
           asset_name: ${{ matrix.file }}
           asset_content_type: ${{ matrix.content_type }}
-        strategy:
-          matrix:
-            file: ${{ steps.list_files.outputs.files }}
-            content_type: ${{ matrix.file_extension_to_content_type[matrix.file_extension] }}
-            file_extension_to_content_type:
-              .zip: application/zip
-              .msi: application/x-msi
-              .exe: application/octet-stream
-              .jar: application/java-archive
-              .run: application/octet-stream
