@@ -21,6 +21,6 @@ powershell -command "Compress-Archive -Path 'build\jpackage\app' -DestinationPat
 
 echo moving files to releases
 move build\jpackage\%FILE_NAME%* build\releases\
-move ./build/libs/$FILE_NAME.jar ./build/releases/$FILE_NAME-win.jar
+move .\build\libs\%FILE_NAME%.jar .\build\releases\%FILE_NAME%-win.jar
 
 
