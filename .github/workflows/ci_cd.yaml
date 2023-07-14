@@ -45,6 +45,8 @@ jobs:
         run: sudo apt-get install makeself
       - name: Make script executable
         run: chmod +x ./builders/linux.sh
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Build using script
         run: ./builders/linux.sh
 
