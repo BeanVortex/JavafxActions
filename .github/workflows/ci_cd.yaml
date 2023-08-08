@@ -49,7 +49,7 @@ jobs:
 #          path: ./build/releases
 
   build-mac:
-    runs-on: [ macos-arm ]
+    runs-on: [ m1max ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19.0.2
